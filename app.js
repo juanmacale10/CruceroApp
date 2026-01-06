@@ -8,12 +8,13 @@ import {
 
 /* 🔥 FIREBASE CONFIG */
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_APP.firebaseapp.com",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_APP.appspot.com",
-  messagingSenderId: "TU_ID",
-  appId: "TU_APP_ID"
+  apiKey: "AIzaSyDL-RgYFY5qgeb9R_NLbK-1o8n7IkyzJSU",
+  authDomain: "cruceroapp-afe80.firebaseapp.com",
+  projectId: "cruceroapp-afe80",
+  storageBucket: "cruceroapp-afe80.firebasestorage.app",
+  messagingSenderId: "352836142072",
+  appId: "1:352836142072:web:ad74ceb9b8fbefbac54c0d",
+  measurementId: "G-M4C72HQXPQ"
 };
 
 const app = initializeApp(firebaseConfig);
