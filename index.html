@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gastos de Viaje</title>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+
+<h1>Gastos de Viaje</h1>
+
+<div id="login">
+  <input id="codigoViaje" placeholder="Código de viaje">
+  <button onclick="entrar()">Entrar</button>
+</div>
+
+<div id="app" style="display:none;">
+  <h2 id="tituloViaje"></h2>
+  <div id="personas"></div>
+  <button onclick="agregarPersona()">Agregar persona</button>
+  <h3>Total general: $<span id="totalGeneral">0</span></h3>
+</div>
+
+</body>
+</html>

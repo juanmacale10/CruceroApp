@@ -1,0 +1,95 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* 🔥 CONFIG FIREBASE */
+const firebaseConfig = {
+  apiKey: "AIzaSyDL-RgYFY5qgeb9R_NLbK-1o8n7IkyzJSU",
+  authDomain: "cruceroapp-afe80.firebaseapp.com",
+  projectId: "cruceroapp-afe80",
+  storageBucket: "cruceroapp-afe80.firebasestorage.app",
+  messagingSenderId: "352836142072",
+  appId: "1:352836142072:web:ad74ceb9b8fbefbac54c0d",
+  measurementId: "G-M4C72HQXPQ"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* 📦 ESTADO */
+let codigoViaje = "";
+let personas = [];
+
+/* 🔗 VIAJE DESDE URL */
+const params = new URLSearchParams(window.location.search);
+const viajeURL = params.get("viaje");
+
+if (viajeURL) entrar(viajeURL);
+
+/* 🚪 ENTRAR AL VIAJE */
+window.entrar = async function(codigoInput) {
+  codigoViaje = codigoInput || document.getElementById("codigoViaje").value;
+  if (!codigoViaje) return;
+
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  document.getElementById("tituloViaje").innerText = codigoViaje;
+
+  const ref = doc(db, "viajes", codigoViaje);
+
+  onSnapshot(ref, async (snap) => {
+    if (snap.exists()) {
+      personas = snap.data().personas || [];
+    } else {
+      await setDoc(ref, { personas: [] });
+      personas = [];
+    }
+    render();
+  });
+}
+
+/* 💾 GUARDAR */
+async function guardar() {
+  const ref = doc(db, "viajes", codigoViaje);
+  await setDoc(ref, { personas });
+}
+
+/* 👤 AGREGAR PERSONA */
+window.agregarPersona = function() {
+  const nombre = prompt("Nombre de la persona");
+  if (!nombre) return;
+
+  personas.push({ nombre, gastos: [] });
+  guardar();
+}
+
+/* 🎨 RENDER */
+function render() {
+  const cont = document.getElementById("personas");
+  cont.innerHTML = "";
+
+  let totalGeneral = 0;
+
+  personas.forEach((p, i) => {
+    const total = p.gastos.reduce((a, g) => a + g.monto, 0);
+    totalGeneral += total;
+
+    cont.innerHTML += `
+      <div>
+        <h3>${p.nombre} — $${total}</h3>
+        <button onclick="agregarGasto(${i})">Agregar gasto</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("totalGeneral").innerText = totalGeneral;
+}
+
+/* 💸 AGREGAR GASTO */
+window.agregarGasto = function(i) {
+  const concepto = prompt("Concepto");
+  const monto = Number(prompt("Monto"));
+  if (!concepto || !monto) return;
+
+  personas[i].gastos.push({ concepto, monto });
+  guardar();
+}
