@@ -93,34 +93,13 @@ function render() {
   const cont = document.getElementById("personas");
   cont.innerHTML = "";
 
-  let totalGeneral = 0;
-
- personas.forEach((p, i) => {
-  const total = p.gastos.reduce((a, g) => a + g.monto, 0);
-  totalGeneral += total;
-
-  const gastosHTML = p.gastos.map(g => `
-    <div style="display:flex;justify-content:space-between;padding:4px 0">
-      <span>${g.concepto}</span>
-      <strong>$${g.monto}</strong>
-    </div>
-  `).join("");
-
-  cont.innerHTML += `
-    <div style="border:1px solid #ccc;padding:10px;margin-bottom:10px">
-      <h3>${p.nombre}</h3>
-
-      ${gastosHTML || "<em>Sin gastos</em>"}
-
-      <div style="margin-top:8px;font-weight:bold">
-        Total: $${total}
+  personas.forEach((p, i) => {
+    cont.innerHTML += `
+      <div style="border:1px solid red; padding:10px; margin-bottom:10px">
+        <h3>${p.nombre}</h3>
+        <pre>${JSON.stringify(p.gastos, null, 2)}</pre>
+        <button onclick="agregarGasto(${i})">Agregar gasto</button>
       </div>
-
-      <button onclick="agregarGasto(${i})">Agregar gasto</button>
-    </div>
-  `;
-});
-
-
-  document.getElementById("totalGeneral").innerText = totalGeneral;
+    `;
+  });
 }
