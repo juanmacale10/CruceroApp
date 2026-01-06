@@ -108,26 +108,18 @@ function render() {
   `).join("");
 
   cont.innerHTML += `
-  <div class="persona">
-    <h3>${p.nombre}</h3>
+    <div style="border:1px solid #ccc;padding:10px;margin-bottom:10px">
+      <h3>${p.nombre}</h3>
 
-    ${
-      p.gastos.length
-        ? p.gastos.map(g => `
-            <div class="gasto">
-              <span>${g.concepto}</span>
-              <strong>$${g.monto}</strong>
-            </div>
-          `).join("")
-        : "<em>Sin gastos</em>"
-    }
+      ${gastosHTML || "<em>Sin gastos</em>"}
 
-    <div class="total">Total: $${total}</div>
+      <div style="margin-top:8px;font-weight:bold">
+        Total: $${total}
+      </div>
 
-    <button onclick="agregarGasto(${i})">Agregar gasto</button>
-  </div>
-`;
-
+      <button onclick="agregarGasto(${i})">Agregar gasto</button>
+    </div>
+  `;
 });
 
 
