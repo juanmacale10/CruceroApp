@@ -45,15 +45,15 @@ window.entrar = function (codigo) {
 
   const ref = doc(db, "viajes", codigoViaje);
 
-  onSnapshot(ref, async (snap) => {
-    if (snap.exists()) {
-      personas = snap.data().personas || [];
-    } else {
-      await setDoc(ref, { personas: [] });
-      personas = [];
-    }
-    render();
-  });
+  onSnapshot(ref, (snap) => {
+  if (snap.exists()) {
+    personas = snap.data().personas || [];
+  } else {
+    personas = [];
+  }
+  render();
+});
+
 };
 
 /* 💾 GUARDAR */
@@ -64,13 +64,18 @@ async function guardar() {
 }
 
 /* 👤 AGREGAR PERSONA */
-window.agregarPersona = function () {
+window.agregarPersona = async function () {
   const nombre = prompt("Nombre de la persona");
   if (!nombre) return;
 
-  personas.push({ nombre, gastos: [] });
-  guardar();
+  personas.push({
+    nombre,
+    gastos: []
+  });
+
+  await guardar();
 };
+
 
 /* 💸 AGREGAR GASTO */
 window.agregarGasto = function (i) {
