@@ -1,15 +1,19 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* 🔥 CONFIG FIREBASE */
+/* 🔥 FIREBASE CONFIG */
 const firebaseConfig = {
-  apiKey: "AIzaSyDL-RgYFY5qgeb9R_NLbK-1o8n7IkyzJSU",
-  authDomain: "cruceroapp-afe80.firebaseapp.com",
-  projectId: "cruceroapp-afe80",
-  storageBucket: "cruceroapp-afe80.firebasestorage.app",
-  messagingSenderId: "352836142072",
-  appId: "1:352836142072:web:ad74ceb9b8fbefbac54c0d",
-  measurementId: "G-M4C72HQXPQ"
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_APP.firebaseapp.com",
+  projectId: "TU_PROJECT_ID",
+  storageBucket: "TU_APP.appspot.com",
+  messagingSenderId: "TU_ID",
+  appId: "TU_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -19,15 +23,19 @@ const db = getFirestore(app);
 let codigoViaje = "";
 let personas = [];
 
-/* 🔗 VIAJE DESDE URL */
-const params = new URLSearchParams(window.location.search);
-const viajeURL = params.get("viaje");
+/* 🚀 INIT */
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const viajeURL = params.get("viaje");
 
-if (viajeURL) entrar(viajeURL);
+  if (viajeURL) {
+    entrar(viajeURL);
+  }
+});
 
 /* 🚪 ENTRAR AL VIAJE */
-window.entrar = async function(codigoInput) {
-  codigoViaje = codigoInput || document.getElementById("codigoViaje").value;
+window.entrar = function (codigo) {
+  codigoViaje = codigo || document.getElementById("codigoViaje").value.trim();
   if (!codigoViaje) return;
 
   document.getElementById("login").style.display = "none";
@@ -45,22 +53,34 @@ window.entrar = async function(codigoInput) {
     }
     render();
   });
-}
+};
 
 /* 💾 GUARDAR */
 async function guardar() {
+  if (!codigoViaje) return;
   const ref = doc(db, "viajes", codigoViaje);
   await setDoc(ref, { personas });
 }
 
 /* 👤 AGREGAR PERSONA */
-window.agregarPersona = function() {
+window.agregarPersona = function () {
   const nombre = prompt("Nombre de la persona");
   if (!nombre) return;
 
   personas.push({ nombre, gastos: [] });
   guardar();
-}
+};
+
+/* 💸 AGREGAR GASTO */
+window.agregarGasto = function (i) {
+  const concepto = prompt("Concepto");
+  const monto = Number(prompt("Monto"));
+
+  if (!concepto || isNaN(monto)) return;
+
+  personas[i].gastos.push({ concepto, monto });
+  guardar();
+};
 
 /* 🎨 RENDER */
 function render() {
@@ -74,7 +94,7 @@ function render() {
     totalGeneral += total;
 
     cont.innerHTML += `
-      <div>
+      <div style="border:1px solid #ccc;padding:10px;margin-bottom:10px">
         <h3>${p.nombre} — $${total}</h3>
         <button onclick="agregarGasto(${i})">Agregar gasto</button>
       </div>
@@ -82,14 +102,4 @@ function render() {
   });
 
   document.getElementById("totalGeneral").innerText = totalGeneral;
-}
-
-/* 💸 AGREGAR GASTO */
-window.agregarGasto = function(i) {
-  const concepto = prompt("Concepto");
-  const monto = Number(prompt("Monto"));
-  if (!concepto || !monto) return;
-
-  personas[i].gastos.push({ concepto, monto });
-  guardar();
 }
